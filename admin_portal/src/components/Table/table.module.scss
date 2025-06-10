@@ -1,0 +1,36 @@
+.tableRow {
+  cursor: default;
+  height: 55px;
+
+  &:global.Mui-selected {
+    background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.075));
+
+    &:global.MuiTableRow-root.MuiTableRow-hover:hover {
+      background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.075));
+    }
+  }
+
+  &:global.MuiTableRow-root {
+    min-height: 55px;
+  }
+}
+
+.tableRowLink {
+  cursor: pointer;
+
+  &:global.MuiTableRow-root.MuiTableRow-hover:hover {
+    background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.1));
+  }
+
+  &:global.MuiTableRow-root.MuiTableRow-hover.Mui-selected:hover {
+    background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.1));
+  }
+}
+
+.tableLoadingCell {
+  padding: 14px;
+}
+
+.tableCellLink {
+  color: var(--mui-palette-text-primary);
+}

@@ -1,0 +1,66 @@
+name: Release Dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: The release platform
+        required: true
+        type: choice
+        options:
+          - "android"
+          - "ios"
+      type:
+        description: The type of release
+        required: true
+        type: choice
+        default: regular
+        options:
+          - "regular"
+          - "ota"
+      env_name:
+        description: The environment to release to
+        required: true
+        type: choice
+        default: staging
+        options:
+          - "staging"
+          - "prod"
+jobs:
+  # * Keep job names the same so that GH can recognize checks for branch protection rules
+  release-to-android-ota:
+    if: inputs.type == 'ota' && inputs.platform == 'android'
+    uses: ./.github/workflows/ota_release.yml
+    with:
+      env_name: ${{ inputs.env_name }}
+      platform: ${{ inputs.platform }}
+    secrets: inherit
+  release-to-android-regular:
+    if: inputs.type == 'regular' && inputs.platform == 'android'
+    uses: ./.github/workflows/android_release.yml
+    secrets: inherit
+    with:
+      env_name: ${{ inputs.env_name }}
+  release-to-ios-ota:
+    if: inputs.type == 'ota' && inputs.platform == 'ios'
+    uses: ./.github/workflows/ota_release.yml
+    secrets: inherit
+    with:
+      env_name: ${{ inputs.env_name }}
+      platform: ${{ inputs.platform }}
+  release-to-ios-regular:
+    if: inputs.type == 'regular' && inputs.platform == 'ios'
+    uses: ./.github/workflows/ios_release.yml
+    secrets: inherit
+    with:
+      env_name: ${{ inputs.env_name }}
+
+  # * This job is used to create a a check to be used for gh branch protection rules.
+  # * It will be dynamically named and and marked completed if ANY of the above jobs
+  # * are run (and are successful).
+  mark-completed:
+    name: Completed ${{ inputs.platform }} Release to ${{ inputs.env_name }}
+    needs: [release-to-android-ota, release-to-android-regular, release-to-ios-ota, release-to-ios-regular]
+    if: ${{ always() && contains(needs.*.result, 'success') && !(contains(needs.*.result, 'failure')) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Completed ${{ inputs.platform }} ${{inputs.type}} Release to ${{ inputs.env_name }}"

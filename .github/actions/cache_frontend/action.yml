@@ -1,0 +1,14 @@
+name: "Cache Frontend"
+description: "Installs and Caches packages for mobile builds"
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install dependencies # install project deps with --frozen-lockfile to make sure we will have the same packages version ( very recommended  on running yarn install on ci)
+      if: steps.yarn-cache.outputs.cache-hit != 'true'
+      run: cd frontend && yarn install --frozen-lockfile --network-timeout 300000
+      shell: bash

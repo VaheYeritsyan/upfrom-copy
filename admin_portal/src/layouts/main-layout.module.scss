@@ -1,0 +1,13 @@
+.mainLayout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  padding: var(--spacing-26) var(--spacing-18) var(--spacing-18);
+}
+
+.mainLayoutContent {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+}

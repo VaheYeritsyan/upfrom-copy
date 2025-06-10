@@ -1,0 +1,22 @@
+.createEventTeamMembersHeader {
+  display: flex;
+  align-items: center;
+}
+
+.createEventTeamMembersItem {
+  gap: var(--spacing);
+  display: flex;
+  align-items: center;
+}
+
+.createEventTeamMembersItemMain {
+  gap: var(--spacing-2);
+  display: flex;
+  align-items: center;
+}
+
+.createEventTeamMembersItemImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "667154481131",
+    "project_id": "upfrom-431f9",
+    "storage_bucket": "upfrom-431f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667154481131:android:4ba7998a20f09e3eb223ae",
+        "android_client_info": {
+          "package_name": "com.upfrom.upfromapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667154481131-7tl9ct1gne9e73t9lrvoc9tfsgrhufj0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb56iiPF-PcmmOOAsHWYmnHo-ptuhf0Aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667154481131-7tl9ct1gne9e73t9lrvoc9tfsgrhufj0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "667154481131-8m5036k7a80knth17kj4gh8tdst1smld.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.UpFrom"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.options.json",
+  "include": [
+    "stacks"
+  ],
+  "references": [
+    {
+      "path": "packages/core"
+    },
+    {
+      "path": "packages/functions"
+    },
+    {
+      "path": "packages/repository"
+    },
+    {
+      "path": "packages/services"
+    },
+    {
+      "path": "packages/util"
+    },
+    // {
+    //   "path": "packages/frontend"
+    // },
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+  },
+}

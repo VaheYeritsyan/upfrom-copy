@@ -1,0 +1,43 @@
+name: Check code format and quality
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  eslint:
+    name: Run eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+  tsc:
+    name: Check Typescript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::500251351617:role/OIDC_SST
+          role-session-name: BuildSSTDevSharedStage
+          aws-region: us-east-1
+      - name: Setup Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+
+      - name: Build sst project to get all types
+        run: yarn sst build --stage ci-cd
+      - name: Type Check
+        run: yarn typecheck

@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+
+# but include everything in lambda layers
+!packages/functions/layers/**
+
+# sst
+.sst
+.build
+
+# misc
+.DS_Store
+
+# local env files
+.env*.local
+
+# tscheck files
+tsconfig.tsbuildinfo
+
+# IDE
+.idea
+
+.open-next

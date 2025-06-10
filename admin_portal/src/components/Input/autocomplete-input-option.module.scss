@@ -1,0 +1,40 @@
+.autocompleteInputOption {
+  display: flex;
+  align-items: center;
+}
+
+.autocompleteInputOptionImg {
+  width: 42px;
+  height: 42px;
+  min-width: 32px;
+  min-height: 32px;
+  overflow: hidden;
+  object-fit: cover;
+  margin-right: var(--spacing-2);
+}
+
+.autocompleteInputOptionImgCircle {
+  border-radius: 100%;
+}
+
+.autocompleteInputOptionImgSquare {
+  border-radius: 4px;
+}
+
+.autocompleteInputOptionImgSelected {
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.autocompleteInputOptionMain {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.itemContainer{
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+}
+

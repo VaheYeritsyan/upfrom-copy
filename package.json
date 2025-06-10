@@ -1,0 +1,64 @@
+{
+  "name": "up-from",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sst dev --profile=dev",
+    "debug": "sst dev --profile=dev --verbose",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
+    "console:staging": "sst console --profile=staging --stage=staging",
+    "console:prod": "sst console --profile=production --stage=prod",
+    "check": "yarn lint && yarn typecheck ; yarn typecheck:clear",
+    "typecheck": "node --max-old-space-size=4096 ./node_modules/typescript/bin/tsc --build && yarn typecheck:frontend && yarn typecheck:admin",
+    "typecheck:frontend": "cd ./frontend && node --max-old-space-size=4096 ../node_modules/typescript/bin/tsc --build",
+    "typecheck:admin": "cd ./admin_portal && node --max-old-space-size=4096 ../node_modules/typescript/bin/tsc --build",
+    "typecheck:clear": "rm -r ./dist ./frontend/dist ./admin_portal/dist ./packages/*/dist",
+    "gen": "hygen",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "reset": "find . -type dir -name node_modules -not \\( -path './packages/functions/layers/*' -type dir \\) | xargs rm -rf && rm -rf yarn.lock",
+    "metro": "yarn workspace frontend start",
+    "ios": "yarn workspace frontend ios",
+    "android": "yarn workspace frontend android",
+    "admin": "yarn workspace admin_portal dev",
+    "secret:list:local": "sst secrets list --profile=dev",
+    "secret:list:dev": "sst secrets list --fallback --profile=dev",
+    "secret:list:staging": "sst secrets list --profile=staging --stage=staging",
+    "secret:list:prod": "sst secrets list --profile=production --stage=prod",
+    "secret:set:local": "sst secrets set --profile=dev",
+    "secret:set:dev": "sst secrets set --profile=dev --fallback",
+    "secret:set:staging": "sst secrets set --profile=staging --stage=staging",
+    "secret:set:prod": "sst secrets set --profile=production --stage=prod"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "aws-cdk-lib": "2.161.1",
+    "constructs": "10.3.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint": "^8.56.0",
+    "hygen": "^6.2.11",
+    "prettier": "^2.8.8",
+    "sst": "2.44.0",
+    "typescript": "5.1.6"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "frontend",
+      "admin_portal"
+    ],
+    "nohoist": [
+      "**/react",
+      "**/react-dom"
+    ]
+  },
+  "overrides": {
+    "graphql": "16.5.0"
+  }
+}

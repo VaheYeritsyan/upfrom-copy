@@ -1,0 +1,24 @@
+.tableImgCell {
+  max-width: 24px;
+  max-height: 24px;
+  min-height: 24px;
+  min-width: 24px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.tableImgCellPreview {
+  max-height: 300px;
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.tableImgCellTooltip {
+  &:global.MuiTooltip-tooltip {
+    padding: 0;
+    overflow: hidden;
+    background-color: transparent;
+  }
+}

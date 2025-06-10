@@ -1,0 +1,7 @@
+_templates/
+node_modules/
+packages/graphql/genql/
+packages/graphql-ap/genql/
+packages/graphql-ap/queryGenerator.ts
+packages/graphql-mp/genql/
+**/*.generated.*

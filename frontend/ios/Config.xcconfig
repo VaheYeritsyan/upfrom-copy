@@ -1,0 +1,13 @@
+//
+//  Config.xcconfig
+//  UpFrom
+//
+//  Created by Joshua Maffuccio on 8/8/22.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+
+// This enables react-native-config usage in plist files
+#include? "tmp.xcconfig"

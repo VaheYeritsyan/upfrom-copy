@@ -1,0 +1,108 @@
+.calendarToolbar {
+  flex-direction: column;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+
+  &:global.MuiToolbar-root {
+    align-items: flex-start;
+
+    @media (min-width: 600px) {
+      min-height: 56px;
+      padding-right: var(--spacing-4);
+      padding-left: var(--spacing-4);
+    }
+  }
+}
+
+.calendarToolbarFilters {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  padding-bottom: var(--spacing-2);
+
+  & > form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+
+    & div {
+      &:global.MuiAutocomplete-root {
+        width: 350px;
+      }
+
+      flex: 1;
+    }
+
+    & div > label {
+      font-size: 0.8em;
+      line-height: 1.25em;
+    }
+
+    & div input {
+      font-size: 0.8em;
+    }
+
+    & div svg {
+      min-width: 16px;
+      min-height: 16px;
+      max-width: 16px;
+      max-height: 16px;
+    }
+  }
+}
+
+.calendarToolbarSelected {
+  background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.075));
+}
+
+.calendarToolbarContent {
+  min-height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendarToolbarContentLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.calendarToolbarContentLeftControls {
+  display: flex;
+  align-items: center;
+}
+
+.calendarToolbarActionButton {
+  min-width: 140px;
+}
+
+.calendarToolbarActionButtons {
+  display: flex;
+  align-items: center;
+
+  & div {
+    max-width: 150px;
+    flex: 1;
+  }
+
+  & div > label {
+    font-size: 0.8em;
+    line-height: 1.25em;
+  }
+
+  & div input {
+    font-size: 0.8em;
+  }
+
+  & div svg {
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+  }
+}

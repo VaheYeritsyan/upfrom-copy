@@ -1,0 +1,124 @@
+name: iOS Release
+defaults:
+  run:
+    working-directory: frontend
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        required: true
+        type: string # Must be staging or prod
+
+jobs:
+  ios-release:
+    name: iOS ${{ inputs.env_name }} Release
+    environment: ${{ inputs.env_name }}
+    runs-on: macos-latest
+    outputs:
+      env_name: ${{ inputs.env_name }}
+
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache and Install node modules
+        uses: ./.github/actions/cache_frontend
+
+      - name: setup-cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1
+        with:
+          podfile-path: frontend/ios/Podfile.lock
+
+      - name: Generate frontend/.env
+        run: |
+          echo CODE_PUSH_DEPLOYMENT_KEY_IOS=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY_IOS }} >> .env
+          echo API_URL=${{ secrets.API_URL }} >> .env
+          echo STREAM_CHAT_API_KEY=${{ secrets.STREAM_CHAT_API_KEY }} >> .env
+          echo GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} >> .env
+
+      - name: Setup Ruby (bundle)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Restore Pods cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install Pods
+        run: cd ios && pod install --repo-update
+        # run: cd ios && pod install
+
+      - name: Build IOS App
+        uses: yukiarrr/ios-build-action@v1.9.1
+        with:
+          project-path: frontend/ios/UpFrom.xcodeproj
+          p12-base64: ${{ secrets.IOS_P12_BASE64 }}
+          mobileprovision-base64: ${{ inputs.env_name == 'prod' && secrets.IOS_MOBILE_PROVISION_BASE64_APP_STORE || secrets.IOS_MOBILE_PROVISION_BASE64_AD_HOC }}
+          code-signing-identity: 'iPhone Distribution'
+          export-method: ${{ inputs.env_name == 'prod' && 'app-store' || 'ad-hoc' }}
+          team-id: ${{ secrets.IOS_TEAM_ID }}
+          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          workspace-path: frontend/ios/UpFrom.xcworkspace
+          scheme: UpFrom
+          increment-build-number: ${{ inputs.env_name == 'prod' && 'testflight' || true }}
+          # TODO: probably would be better to move it to github secrets as well
+          bundle-identifier: 'com.upfrom.upfromapp'
+          app-store-connect-api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          app-store-connect-api-key-issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          app-store-connect-api-key-base64: ${{ secrets.APPSTORE_API_PRIVATE_KEY_BASE64 }}
+
+      # ----------Prod only-------------#
+      - name: 'Upload app to TestFlight'
+        if: inputs.env_name == 'prod'
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: 'output.ipa'
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+      # --------------------------------#
+
+      # ------- Staging only --------- #
+      - name: Upload artifact
+        if: inputs.env_name == 'staging'
+        uses: actions/upload-artifact@v3
+        with:
+          name: staging-app-upload
+          path: output.ipa
+          retention-days: 1
+          if-no-files-found: error
+      # ------------------------------- #
+
+  firebase-staging-distribution:
+    # TODO: could probably clean this up by making it a callable workflow
+    needs: ios-release
+    if: needs.ios-release.outputs.env_name == 'staging'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: staging-app-upload
+
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.IOS_FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.FIREBASE_CREDENTIAL_FILE_CONTENT}}
+          releaseNotes: ${{ github.ref_name }}\n\n${{ github.sha }}
+          file: output.ipa

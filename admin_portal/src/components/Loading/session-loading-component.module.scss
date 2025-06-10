@@ -1,0 +1,22 @@
+.sessionLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.sessionLoadingContent {
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 450px;
+  width: 100%;
+}
+
+.sessionLoadingMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}

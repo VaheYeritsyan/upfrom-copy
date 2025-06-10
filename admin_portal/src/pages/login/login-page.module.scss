@@ -1,0 +1,30 @@
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--mui-palette-common-white);
+}
+
+.loginPageContent {
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 450px;
+  width: 100%;
+}
+
+.loginPageMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}
+
+.loginLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+}

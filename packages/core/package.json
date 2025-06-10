@@ -1,0 +1,21 @@
+{
+  "name": "@up-from/core",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*.js",
+    "./admin": "./src/admin/index.js",
+    "./admin/*": "./src/admin/*.js"
+  },
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.17.9",
+    "sst": "2.44.0"
+  }
+}

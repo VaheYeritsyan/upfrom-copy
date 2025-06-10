@@ -1,0 +1,67 @@
+.tableToolbar {
+  flex-direction: column;
+  justify-content: center;
+
+  &:global.MuiToolbar-root {
+    align-items: flex-start;
+
+    @media (min-width: 600px) {
+      min-height: 56px;
+      padding-right: var(--spacing-4);
+      padding-left: var(--spacing-4);
+    }
+  }
+}
+
+.tableToolbarFilters {
+  display: flex;
+  padding-bottom: var(--spacing-2);
+
+  & > form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+
+    & div {
+      max-width: 150px;
+      flex: 1;
+    }
+
+    & div > label {
+      font-size: 0.8em;
+      line-height: 1.25em;
+    }
+
+    & div input {
+      font-size: 0.8em;
+    }
+
+    & div svg {
+      min-width: 16px;
+      min-height: 16px;
+      max-width: 16px;
+      max-height: 16px;
+    }
+  }
+}
+
+.tableToolbarSelected {
+  background-color: rgba(var(--mui-palette-primary-mainChannel, 25 118 210) / var(--mui-palette-action-selectedOpacity, 0.075));
+}
+
+.tableToolbarContent {
+  min-height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tableToolbarActionButton {
+  min-width: 140px;
+}
+
+.tableToolbarActionButtons {
+  display: flex;
+}

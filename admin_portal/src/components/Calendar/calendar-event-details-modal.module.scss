@@ -1,0 +1,100 @@
+.eventModal {
+  overflow: hidden;
+  outline: none;
+}
+
+.eventModalBody {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.eventModalContent {
+  gap: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  padding-bottom: var(--spacing-4);
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.eventModalHeader {
+  position: sticky;
+  top: 0;
+}
+
+.eventModalCloseButton {
+  &:global.MuiButtonBase-root.MuiButton-root {
+    position: absolute;
+  }
+
+  right: var(--spacing-2);
+  top: var(--spacing-2);
+}
+
+.eventModalImg {
+  height: 250px;
+  min-height: 250px;
+  width: 100%;
+  object-fit: cover;
+  background-color: var(--mui-palette-secondary-main);
+}
+
+.eventModalRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-10) var(--spacing-2) var(--spacing-2);
+  background-color: var(--mui-palette-common-white);
+
+  &:hover {
+    background-color: var(--mui-palette-action-hover);
+  }
+}
+
+.eventModalRowIconContainer {
+  width: 56px;
+  min-width: 56px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mui-palette-text-secondary);
+}
+
+.eventModalRowContent {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+
+  & > p {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+}
+
+.eventModalDangerBadge {
+  &:global.MuiTypography-root {
+    line-height: 1.25;
+    margin-left: var(--spacing-2);
+  }
+
+  transform: translateY(-2px);
+  display: inline-block;
+  background-color: var(--mui-palette-error-main);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.eventModalColor {
+  margin-top: var(--spacing-2);
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}

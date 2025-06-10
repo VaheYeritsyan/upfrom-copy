@@ -1,0 +1,43 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  max-width: 440px;
+  width: 100%;
+}
+
+.modalHeader {
+  min-height: 56px;
+  border-bottom: 1px solid var(--mui-palette-TableCell-border);
+}
+
+.modalHeaderTop {
+  padding-right: var(--spacing-4);
+  padding-left: var(--spacing-4);
+  padding-top: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-6) var(--spacing-4) var(--spacing-6) var(--spacing-4);
+  gap: var(--spacing-4);
+}
+
+.modalBodyNoPadding {
+  padding: 0;
+  gap: 0;
+}
+
+.modalFooter {
+  min-height: 56px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 1px solid var(--mui-palette-TableCell-border);
+  gap: var(--spacing-2);
+  padding-right: var(--spacing-4);
+  padding-left: var(--spacing-4);
+}

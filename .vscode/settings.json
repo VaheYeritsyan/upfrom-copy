@@ -1,0 +1,25 @@
+{
+  "search.exclude": {
+    "**/.sst": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "cSpell.words": [
+    "cmpr",
+    "exposable",
+    "genql",
+    "insertable",
+    "kysely",
+    "mentee",
+    "plpgsql",
+    "sendgrid",
+    "thundra",
+    "updateable",
+    "upfrom"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsserver.maxTsServerMemory": 8196,
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "javascript.preferences.importModuleSpecifierEnding": "js"
+}

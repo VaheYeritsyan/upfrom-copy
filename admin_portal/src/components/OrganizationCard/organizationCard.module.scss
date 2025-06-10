@@ -1,0 +1,19 @@
+.organizationCard {
+  .buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+    gap: 2px;
+  }
+  .text {
+    text-decoration: none;
+  }
+
+  .inputBlock {
+    flex: 1
+  }
+}
+
+.LinkText {
+  text-decoration: none;
+}

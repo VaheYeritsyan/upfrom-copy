@@ -1,0 +1,48 @@
+.chartContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.chartEmptyContainer {
+  padding: calc(var(--spacing-5) + 56px) var(--spacing-4) var(--spacing-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chartHeader {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  top: 0;
+  padding: var(--spacing-4);
+  display: flex;
+  gap: var(--spacing-4);
+  background-color: var(--mui-palette-background-paper, #FFF);
+  border-bottom: 1px solid var(--mui-palette-TableCell-border, rgba(224, 224, 224, 1));
+}
+
+.chartHeaderLegendItem {
+  display: flex;
+  gap:  var(--spacing-2);
+  align-items: center;
+}
+
+.chartHeaderLegendItemHidden {
+  opacity: 0.4;
+}
+
+.chartHeaderLegendColor {
+  height: 16px;
+  width: 16px;
+  border-radius: 4px;
+}
+
+.chartFooter {
+  border-top: 1px solid var(--mui-palette-TableCell-border, rgba(224, 224, 224, 1));
+  display: flex;
+  padding: var(--spacing-3) var(--spacing-6);
+}

@@ -1,0 +1,427 @@
+type Admin {
+  createdAt: Timestamp!
+  email: String!
+  id: ID!
+  isDisabled: Boolean!
+  name: String
+  updatedAt: Timestamp!
+}
+
+scalar Date
+
+type Event implements Node {
+  address: String
+  createdAt: Timestamp!
+  description: String!
+  endsAt: Timestamp!
+  globalId: ID!
+  guests: [EventUser!]!
+  id: ID!
+  imageUrl: String
+  isCancelled: Boolean!
+  isIndividual: Boolean!
+  location: LocationType
+  owner: User
+  ownerId: ID!
+  startsAt: Timestamp!
+  team: Team
+  teamId: ID
+  title: String!
+  updatedAt: Timestamp!
+}
+
+type EventUser {
+  createdAt: Timestamp!
+  eventId: ID!
+  isAttending: Boolean
+  updatedAt: Timestamp!
+  user: User
+  userId: ID!
+}
+
+type EventUserAttendance {
+  accepted: Int!
+  declined: Int!
+  pending: Int!
+  total: Int!
+  user: User
+  userId: ID!
+}
+
+input LocationInput {
+  lat: String!
+  lng: String!
+  locationID: String!
+  locationName: String!
+}
+
+type LocationType {
+  lat: String!
+  lng: String!
+  locationID: String!
+  locationName: String!
+}
+
+input MinMaxInput {
+  max: Float
+  min: Float
+}
+
+"""UpFrom Admin mutations"""
+type Mutation {
+  """Adds a new team member"""
+  addTeamMember(role: TeamUserRoles!, teamId: String!, userId: String!): Team
+
+  """Cancel an event"""
+  cancelEvent(id: String!): Event!
+
+  """
+  Completes avatar upload process (converts uploaded avatar and moves to public storage)
+  """
+  completeAvatarUpload(id: String!): User!
+
+  """
+  Completes event image upload process (converts uploaded image and moves it to a public storage)
+  """
+  completeEventImageUpload(id: String!): Event!
+
+  """
+  Completes organization image upload process (converts uploaded image and moves it to a public storage)
+  """
+  completeOrganizationImageUpload(id: String!): Organization!
+
+  """
+  Completes team image upload process (converts uploaded image and moves it to a public storage)
+  """
+  completeTeamImageUpload(id: String!): Team!
+
+  """Create new admin account"""
+  createAdmin(email: String!, name: String): Admin!
+
+  """Create a new event"""
+  createEvent(
+    address: String
+    description: String!
+    endsAt: Timestamp!
+    imageUrl: String
+    isIndividual: Boolean!
+
+    """Adds owner to invited users and accepts invitation"""
+    isOwnerAttending: Boolean = true
+    location: LocationInput
+    ownerId: String!
+    startsAt: Timestamp!
+    teamId: String
+    title: String!
+  ): Event!
+
+  """Add an event user (guest) to the list of event guests/invitations"""
+  createEventUser(
+    eventId: String!
+
+    """Set "null" to clear status"""
+    isAttending: Boolean = null
+    userId: String!
+  ): Event!
+
+  """Create a new organization"""
+  createOrganization(details: String!, name: String!): Organization!
+  createTeam(description: String!, imageUrl: String!, name: String!, organizationId: String!): Team!
+
+  """Create a new user and add them to a team"""
+  createTeamUser(about: String, avatarUrl: String, birthday: Date, email: String!, firstName: String, gender: String, lastName: String, location: LocationInput, phone: String, teamId: String!): User!
+
+  """Create a new user"""
+  createUser(about: String, avatarUrl: String, birthday: Date, email: String!, firstName: String, gender: String, isSignupCompleted: Boolean!, lastName: String, location: LocationInput, phone: String): User!
+
+  """Disable admin account"""
+  disableAdmin(id: String!): Admin!
+
+  """
+  Disable a team and its enabled members. Users that were disabled before disabling the team are not included and won't be restored by enabling the team.
+  """
+  disableTeam(id: String!): Team!
+
+  """Disable user account"""
+  disableUser(id: String!): User!
+
+  """Enable admin account"""
+  enableAdmin(id: String!): Admin!
+
+  """
+  Enable a team and its members that were disabled by team disabling. Members that were disabled before team disabling won't be restored.
+  """
+  enableTeam(id: String!): Team!
+
+  """Enable user account"""
+  enableUser(id: String!): User!
+
+  """Generates an avatar upload URL for a user"""
+  generateAvatarUploadUrl(id: String!): String!
+
+  """Generates an image upload URL for event"""
+  generateEventImageUploadUrl(id: String!): String!
+
+  """Generates an image upload URL for organization"""
+  generateOrganizationImageUploadUrl(id: String!): String!
+
+  """Generates an image upload URL for team"""
+  generateTeamImageUploadUrl(id: String!): String!
+
+  """Removes avatar for a user"""
+  removeAvatar(id: String!): User!
+
+  """Removes event image"""
+  removeEventImage(id: String!): Event!
+
+  """Remove an event user (guest) from the list of event guests/invitations"""
+  removeEventUser(eventId: String!, userId: String!): Event!
+
+  """Remove an organization"""
+  removeOrganization(id: String!): Organization!
+
+  """Removes organization image"""
+  removeOrganizationImage(id: String!): Organization!
+
+  """Removes team image"""
+  removeTeamImage(id: String!): Team!
+
+  """Removes a team member"""
+  removeTeamMember(teamId: String!, userId: String!): Team
+
+  """Restore a cancelled event"""
+  restoreEvent(id: String!): Event!
+
+  """Sends an invitation email with registration instructions"""
+  sendInvitationEmail(id: String!): User!
+
+  """Set list of event guests."""
+  setEventGuests(eventId: String!, userIds: [String!]!): Event!
+
+  """Update event info"""
+  updateEvent(address: String, description: String!, endsAt: Timestamp!, id: String!, imageUrl: String, isCancelled: Boolean!, isIndividual: Boolean!, location: LocationInput, ownerId: String!, startsAt: Timestamp!, teamId: String, title: String!): Event!
+
+  """Update Event User entry (Event invitation)"""
+  updateEventUser(
+    eventId: String!
+
+    """Set "null" to clear status"""
+    isAttending: Boolean = null
+    userId: String!
+  ): Event!
+
+  """Update an organization"""
+  updateOrganization(details: String!, id: String!, name: String!): Organization!
+
+  """Update team info"""
+  updateTeam(description: String!, id: String!, imageUrl: String!, name: String!, organizationId: String!): Team!
+
+  """Update team member role"""
+  updateTeamMemberRole(role: TeamUserRoles!, teamId: String!, userId: String!): Team
+
+  """Update user profile"""
+  updateUser(about: String!, avatarUrl: String, birthday: Date!, email: String!, firstName: String!, gender: String!, id: String!, lastName: String!, location: LocationInput!, phone: String!): User!
+}
+
+interface Node {
+  globalId: ID!
+}
+
+enum Order {
+  asc
+  desc
+}
+
+type Organization {
+  createdAt: Timestamp!
+  details: String!
+  id: ID!
+  imageUrl: String
+  name: String!
+  teams: [Team!]!
+  updatedAt: Timestamp!
+}
+
+type PageInfo {
+  endCursor: ID
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: ID
+}
+
+scalar PositiveInt
+
+"""UpFrom Admin queries"""
+type Query {
+  """Retrieve all admins"""
+  allAdmins: [Admin!]
+
+  """Retrieve all counters"""
+  allCounters: SummaryCountersType!
+
+  """Retrieve all events"""
+  allEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryAllEventsConnection!
+
+  """Retrieve all organization counters"""
+  allOrganizationCounters(organizationId: String!): SummaryCountersType!
+
+  """Retrieve all organization events"""
+  allOrganizationEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    organizationId: String!
+    to: Timestamp
+  ): QueryAllOrganizationEventsConnection!
+
+  """Retrieve all organization teams"""
+  allOrganizationTeams(organizationId: String!): [Team!]
+
+  """Retrieve all organization users"""
+  allOrganizationUsers(organizationId: String!): [User!]
+
+  """Retrieve all organizations"""
+  allOrganizations: [Organization!]
+
+  """Retrieve all teams"""
+  allTeams: [Team!]
+
+  """Retrieve all users"""
+  allUsers: [User!]
+  event(id: String!): Event
+
+  """Retrieve event attendance for all members of all organization teams"""
+  getOrganizationAttendance(from: Timestamp, organizationId: String!, to: Timestamp): [EventUserAttendance!]!
+
+  """Retrieve event attendance for all team members"""
+  getTeamAttendance(from: Timestamp, teamId: String!, to: Timestamp): [EventUserAttendance!]!
+
+  """Retrieve event attendance of all users in the app"""
+  getUserAttendance(from: Timestamp, teamId: String, to: Timestamp): [EventUserAttendance!]!
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  organization(id: String!): Organization!
+
+  """Get total amount of organizations"""
+  organizationTotalAmount: Int!
+
+  """Find organizations by name pattern"""
+  searchOrganizations(
+    namePattern: String
+
+    """
+    Sort order of organizations. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+  ): [Organization!]!
+  team(id: String!): Team
+  user(id: String!): User
+}
+
+type QueryAllEventsConnection {
+  edges: [QueryAllEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryAllEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QueryAllOrganizationEventsConnection {
+  edges: [QueryAllOrganizationEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryAllOrganizationEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+input StateInput {
+  abbreviation: String!
+  name: String
+}
+
+type SummaryCountersType {
+  admins: Int!
+  events: Int!
+  invitedUsers: Int!
+  ongoingEvents: Int!
+  organizations: Int!
+  pastEvents: Int!
+  signupCompletedUsers: Int!
+  teams: Int!
+  upcomingEvents: Int!
+  users: Int!
+}
+
+type Team {
+  createdAt: Timestamp!
+  description: String!
+  events: [Event!]!
+  id: ID!
+  imageUrl: String
+  isDisabled: Boolean!
+  members: [TeamUser!]!
+  name: String!
+  organization: Organization!
+  organizationId: ID!
+  updatedAt: Timestamp!
+}
+
+type TeamUser {
+  createdAt: Timestamp!
+  role: String!
+  teamId: ID!
+  updatedAt: Timestamp!
+  user: User
+  userId: ID!
+}
+
+enum TeamUserRoles {
+  member
+  mentor
+}
+
+scalar Timestamp
+
+type User {
+  about: String
+  avatarUrl: String
+  birthday: Date
+  createdAt: Timestamp!
+  email: String!
+  events: [Event!]!
+  firstName: String
+  gender: String
+  id: ID!
+  isDisabled: Boolean!
+  isSignupCompleted: Boolean!
+  lastName: String
+  location: LocationType
+  phone: String
+  teams: [Team!]!
+  updatedAt: Timestamp!
+}

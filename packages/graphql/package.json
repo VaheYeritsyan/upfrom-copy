@@ -1,0 +1,11 @@
+{
+  "name": "@up-from/graphql",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {},
+  "devDependencies": {
+    "@genql/cli": "3.0.5",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.17.9"
+  }
+}

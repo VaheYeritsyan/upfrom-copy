@@ -1,0 +1,115 @@
+name: Android Release
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        required: true
+        type: string # Must be staging or prod
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  android-release:
+    name: Android ${{ inputs.env_name }} Release
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env_name }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up our JDK environment # setup JDK environment: mandatory as we need to build  android project
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Cache and Install node modules
+        uses: ./.github/actions/cache_frontend
+
+      ## generate .env file
+      - name: Generate frontend/.env
+        run: |
+          # * variables used by front-end must be kept in that directory
+          echo CODE_PUSH_DEPLOYMENT_KEY_ANDROID=${{ secrets.code_push_deployment_key }} >> .env
+          echo API_URL=${{ secrets.API_URL }} >> .env
+          echo STREAM_CHAT_API_KEY=${{ secrets.STREAM_CHAT_API_KEY }} >> .env
+          echo GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }} >> .env
+
+      ## configure cache for gradle : will help to reduce build time
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+
+      # ------- Staging only ------- #
+      - name: Generate App APK
+        # TODO: Once our app is fully setup in google console, we can link it with firebase
+        # and distribute as AAB
+        run: cd android && ./gradlew assembleRelease --no-daemon
+        if: inputs.env_name == 'staging'
+      ## sign generated apk
+      - name: Sign APK
+        id: sign_apk
+        uses: r0adkll/sign-android-release@v1
+        if: inputs.env_name == 'staging'
+        with:
+          releaseDirectory: frontend/android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: '34.0.0'
+
+      ## Distribute app to Firebase App Distribution for testing
+      - name: Deploy to Firebase
+        if: inputs.env_name == 'staging'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{secrets.FIREBASE_CREDENTIAL_FILE_CONTENT}}
+          releaseNotes: ${{ github.ref_name }}\n\n${{ github.sha }}
+          file: ${{steps.sign_apk.outputs.signedReleaseFile}}
+      # -------------------------- #
+
+      # ------- Prod only ------- #
+      - name: Build Android App Bundle
+        if: inputs.env_name == 'prod'
+        run: cd android && ./gradlew bundleRelease --no-daemon
+
+      ## sign generated aab
+      - name: Sign App Bundle
+        if: inputs.env_name == 'prod'
+        id: sign_aab
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: frontend/android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
+          alias: ${{ secrets.ANDROID_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      ## Distribute  App to google play alpha track
+      # TODO: look into coalescing with staging build by building both to google store and
+      - name: Upload App to Google Play
+        if: inputs.env_name == 'prod'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT_JSON_TEXT }}
+          packageName: com.upfrom.upfromapp
+          releaseFiles: ${{ steps.sign_aab.outputs.signedReleaseFile }}
+          track: internal
+          status: draft
+          inAppUpdatePriority: 2
+      # -------------------------- #

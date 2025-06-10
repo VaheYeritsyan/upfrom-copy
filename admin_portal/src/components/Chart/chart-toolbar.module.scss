@@ -1,0 +1,22 @@
+.chartToolbar {
+  flex-direction: column;
+  justify-content: center;
+
+  &:global.MuiToolbar-root {
+    align-items: flex-start;
+
+    @media (min-width: 600px) {
+      min-height: 56px;
+      padding-right: var(--spacing-4);
+      padding-left: var(--spacing-4);
+    }
+  }
+}
+
+.chartToolbarContent {
+  min-height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

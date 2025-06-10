@@ -1,0 +1,7 @@
+before_compile:
+  - n 20.18.1
+before_build:
+  # Increasing file watch limit to prevent admin_portal build errors
+  - echo "Current file watch limit:" && cat /proc/sys/fs/inotify/max_user_watches
+  - echo "Increasing file watch limit to 65 536:" && sysctl fs.inotify.max_user_watches=65536 && sysctl -p
+  - echo "Updated file watch limit:" && cat /proc/sys/fs/inotify/max_user_watches

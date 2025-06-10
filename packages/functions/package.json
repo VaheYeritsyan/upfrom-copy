@@ -1,0 +1,32 @@
+{
+  "name": "@up-from/functions",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.js"
+  },
+  "imports": {
+    "#util": "./src/util/index.js",
+    "#util/*": "./src/util/*.js"
+  },
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "dependencies": {
+    "@pothos/core": "^3.33.0",
+    "@pothos/plugin-relay": "^3.43.1",
+    "@js-temporal/polyfill": "^0.4.4",
+    "gaxios": "^5.0.0",
+    "graphql": "^16.7.1",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.17.9",
+    "graphql-scalars": "^1.24.0",
+    "sst": "2.44.0"
+    
+  }
+}

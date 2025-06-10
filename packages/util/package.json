@@ -1,0 +1,16 @@
+{
+  "name": "@up-from/util",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@types/aws-lambda": "^8.10.146",
+    "@types/node": "^20.17.9",
+    "sst": "2.44.0"
+  }
+}

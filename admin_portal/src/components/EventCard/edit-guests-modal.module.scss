@@ -1,0 +1,36 @@
+.createEventModal {
+  height: 642px;
+  overflow: hidden;
+
+  & > form {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.createEventModalBody {
+  padding: var(--spacing-6) 0;
+  flex: 1;
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.createEventModalBodWrapper {
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.createEventModalFormImage {
+  min-height: 231px;
+}

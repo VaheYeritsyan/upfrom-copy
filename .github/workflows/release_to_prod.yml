@@ -1,0 +1,55 @@
+name: Release to Prod
+on:
+  release:
+    types: [published] # only run the workflow when a new release has been published
+jobs:
+  determine-release-type:
+    name: Determine Release Type
+    runs-on: ubuntu-latest
+    outputs:
+      release_type: ${{ steps.check_for_ota.outputs.release_type }}
+    steps:
+      - name: Check for '-ota' version postscript
+        id: check_for_ota
+        run: |
+          echo "Running on branch ${{ github.ref }}"
+          if [ ${{ endsWith(github.ref, '-ota') }} = true ]; then
+            echo "::set-output name=release_type::ota"
+          else
+            echo "::set-output name=release_type::regular"
+          fi
+      - run: echo "Release type is ${{ steps.check_for_ota.outputs.release_type }}"
+    
+  release-to-ios-ota:
+    needs: [determine-release-type]
+    if: needs.determine-release-type.outputs.release_type == 'ota'
+    uses: ./.github/workflows/ota_release.yml
+    with:
+      env_name: prod
+      platform: ios
+    secrets: inherit
+
+  release-to-android-ota:
+    needs: [determine-release-type]
+    if: needs.determine-release-type.outputs.release_type == 'ota'
+    uses: ./.github/workflows/ota_release.yml
+    with:
+      env_name: prod
+      platform: android
+    secrets: inherit
+
+  release-to-android-regular:
+    needs: [determine-release-type]
+    if: needs.determine-release-type.outputs.release_type != 'ota'
+    uses: ./.github/workflows/android_release.yml
+    secrets: inherit
+    with:
+      env_name: prod
+
+  release-to-ios-regular:
+    needs: [determine-release-type]
+    if: needs.determine-release-type.outputs.release_type != 'ota'
+    uses: ./.github/workflows/ios_release.yml
+    secrets: inherit
+    with:
+      env_name: prod

@@ -1,0 +1,13 @@
+.calendarHeaderControlsDivider {
+  &:global.MuiDivider-root {
+    height: 24px;
+    margin-left: var(--spacing-2);
+    margin-right: var(--spacing-2);
+  }
+}
+
+.calendarMonthEventContent {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}

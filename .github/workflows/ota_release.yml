@@ -1,0 +1,33 @@
+name: OTA Release
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        required: true
+        type: string # Must be staging or prod
+      platform:
+        required: true
+        type: string # Must be android or ios
+jobs:
+  ota-release:
+    name: OTA Release ${{ inputs.platform }} ${{ inputs.env_name }}
+    environment: ${{ inputs.env_name }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v3
+      - run: yarn
+      - name: Install AppCenter CLI
+        run: yarn global add appcenter-cli
+      - name: Login to appcenter cli
+        run: appcenter login --token ${{ secrets.APPCENTER_ACCESS_TOKEN }}
+
+      - name: "Deploy CodePush to Android ${{ inputs.env_name }}"
+        run: appcenter codepush release-react -a up-from/UpFrom-Android -d ${{ inputs.env_name }} --description ${{ github.ref_name }}
+        if: inputs.platform == 'android'
+
+      - name: Deploy CodePush to iOS ${{ inputs.env_name }}
+        run:  appcenter codepush release-react --plist-file ios/UpFrom/Info.plist -a up-from/UpFrom-iOS -d ${{ inputs.env_name }} --description ${{ github.ref_name }}
+        if: inputs.platform == 'ios'

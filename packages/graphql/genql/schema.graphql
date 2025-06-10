@@ -1,0 +1,391 @@
+type ChatUserData {
+  id: ID!
+  image: String
+  name: String!
+}
+
+scalar Date
+
+type Event implements Node {
+  address: String
+  description: String!
+  endsAt: Timestamp!
+  globalId: ID!
+  guests: [EventUser!]!
+  id: ID!
+  imageUrl: String
+  isCancelled: Boolean!
+  isIndividual: Boolean!
+  location: LocationType
+  owner: User
+  ownerId: ID!
+  startsAt: Timestamp!
+  team: Team
+  teamId: ID
+  title: String!
+}
+
+type EventUser {
+  eventId: ID!
+  isAttending: Boolean
+  user: User
+  userId: ID!
+}
+
+input LocationInput {
+  lat: String!
+  lng: String!
+  locationID: String!
+  locationName: String!
+}
+
+type LocationType {
+  lat: String!
+  lng: String!
+  locationID: String!
+  locationName: String!
+}
+
+"""UpFrom app mutations"""
+type Mutation {
+  """Add a device ID to receive push notifications"""
+  addDeviceId(deviceId: String!): UserDevice!
+
+  """Cancel an event"""
+  cancelEvent(id: String!): Event
+
+  """
+  Completes avatar upload process (converts uploaded avatar and moves to public storage)
+  """
+  completeAvatarUpload: User!
+
+  """
+  Completes event image upload process (converts uploaded image and moves it to a public storage)
+  """
+  completeEventImageUpload(id: String!): Event!
+
+  """Complete sign up by providing additional profile info"""
+  completeSignUp(about: String!, birthday: Date!, firstName: String!, gender: String, lastName: String!, location: LocationInput!): User!
+
+  """Create a new event."""
+  createEvent(
+    address: String
+    description: String!
+    endsAt: Timestamp!
+    imageUrl: String
+    isIndividual: Boolean!
+
+    """Adds owner to invited users and accepts invitation"""
+    isOwnerAttending: Boolean = true
+    location: LocationInput
+    startsAt: Timestamp!
+    teamId: String
+    title: String!
+  ): Event!
+
+  """Generates an avatar upload URL for current user"""
+  generateAvatarUploadUrl: String!
+
+  """Generates an image upload URL for event"""
+  generateEventImageUploadUrl(id: String!): String!
+
+  """Join a public event."""
+  joinAllTeamsEvent(eventId: String!): Event!
+
+  """Leave a public event."""
+  leaveAllTeamsEvent(eventId: String!): Event!
+
+  """Removes avatar for current user"""
+  removeAvatar: User!
+
+  """Remove a device ID to stop receiving push notifications"""
+  removeDeviceId(deviceId: String!): UserDevice
+
+  """Removes event image"""
+  removeEventImage(id: String!): Event!
+
+  """Set list of event guests."""
+  setEventGuests(eventId: String!, userIds: [String!]!): Event!
+
+  """Update own event."""
+  updateMyEvent(address: String, description: String!, endsAt: Timestamp!, id: String!, imageUrl: String, isIndividual: Boolean!, location: LocationInput, startsAt: Timestamp!, teamId: String, title: String!): Event
+
+  """Update invitation status for current user."""
+  updateMyInvitation(
+    eventId: String!
+
+    """Set "null" to clear status"""
+    isAttending: Boolean = null
+  ): Event!
+
+  """Update notification preferences for current user"""
+  updateMyNotificationPreferences(emailChatNewMessage: Boolean!, emailEventPendingInvitation: Boolean!, pushChatNewMessage: Boolean!, pushEventCancelled: Boolean!, pushEventNewAllTeam: Boolean!, pushEventNewInvitation: Boolean!, pushEventRemovedIndividual: Boolean!, pushEventUpdatedDateTime: Boolean!, pushEventUpdatedLocation: Boolean!, pushTeamNewMember: Boolean!): User!
+
+  """Update profile of current user"""
+  updateMyUser(about: String!, birthday: Date!, firstName: String!, gender: String, lastName: String!, location: LocationInput!): User
+}
+
+interface Node {
+  globalId: ID!
+}
+
+enum Order {
+  asc
+  desc
+}
+
+type Organization {
+  createdAt: Timestamp!
+  details: String!
+  id: ID!
+  imageUrl: String
+  name: String!
+  teams: [Team!]!
+}
+
+type PageInfo {
+  endCursor: ID
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: ID
+}
+
+scalar PositiveInt
+
+"""UpFrom app queries"""
+type Query {
+  """Retrieve All Team events"""
+  allTeamEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryAllTeamEventsConnection!
+  currentUser: User
+
+  """Retrieve events that user has declined (with declined invitation)"""
+  declinedEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryDeclinedEventsConnection!
+
+  """Retrieve a single event"""
+  event(id: String!): Event
+
+  """Retrieve all organizations that are visible to this user"""
+  myOrganizations: [Organization!]
+  myTeams: [Team!]!
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+
+  """Get single organization"""
+  organization(id: String!): Organization!
+
+  """
+  Retrieve events with not responded invitations for current user (events with pending invitation)
+  """
+  pendingEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryPendingEventsConnection!
+
+  """Match event titles to search string and return matched events"""
+  searchEvent(
+    after: ID
+    before: ID
+    first: Int
+    last: Int
+
+    """Should have at least 3 symbols"""
+    searchString: String!
+  ): QuerySearchEventConnection!
+
+  """Retrieve a single team"""
+  team(id: String!): Team
+
+  """Retrieve Team events"""
+  teamEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryTeamEventsConnection!
+  teamTotalAmount: Int!
+  user(id: String!): User
+
+  """Retrieve all events that user is going to visit"""
+  yourEvents(
+    after: ID
+    before: ID
+    first: Int
+    from: Timestamp
+    includeOngoing: Boolean = true
+    last: Int
+
+    """
+    Sort order of events by event start date. Could be "asc" or "desc"
+    """
+    order: Order! = asc
+    to: Timestamp
+  ): QueryYourEventsConnection!
+}
+
+type QueryAllTeamEventsConnection {
+  edges: [QueryAllTeamEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryAllTeamEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QueryDeclinedEventsConnection {
+  edges: [QueryDeclinedEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryDeclinedEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QueryPendingEventsConnection {
+  edges: [QueryPendingEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryPendingEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QuerySearchEventConnection {
+  edges: [QuerySearchEventConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QuerySearchEventConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QueryTeamEventsConnection {
+  edges: [QueryTeamEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryTeamEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type QueryYourEventsConnection {
+  edges: [QueryYourEventsConnectionEdge]!
+  pageInfo: PageInfo!
+}
+
+type QueryYourEventsConnectionEdge {
+  cursor: ID!
+  node: Event!
+}
+
+type Team {
+  createdAt: Timestamp!
+  description: String!
+  id: ID!
+  imageUrl: String
+  isDisabled: Boolean!
+  members: [TeamUser!]!
+  myMembership: TeamUser
+  name: String!
+  organization: Organization!
+  organizationId: ID!
+}
+
+type TeamUser {
+  role: String!
+  teamId: ID!
+  user: User
+  userId: ID!
+}
+
+scalar Timestamp
+
+type User {
+  about: String
+  avatarUrl: String
+  chatData: ChatUserData!
+  createdAt: Timestamp!
+  firstName: String
+  id: ID!
+  isDisabled: Boolean!
+  lastName: String
+  notificationPreferences: UserNotificationPreferences
+  profile: UserProfile
+  teams: [Team!]!
+}
+
+type UserDevice {
+  deviceId: ID!
+  userId: ID!
+}
+
+type UserNotificationPreferences {
+  emailChatNewMessage: Boolean!
+  emailEventPendingInvitation: Boolean!
+  pushChatNewMessage: Boolean!
+  pushEventCancelled: Boolean!
+  pushEventNewAllTeam: Boolean!
+  pushEventNewInvitation: Boolean!
+  pushEventRemovedIndividual: Boolean!
+  pushEventUpdatedDateTime: Boolean!
+  pushEventUpdatedLocation: Boolean!
+  pushTeamNewMember: Boolean!
+  userId: ID!
+}
+
+type UserProfile {
+  birthday: Date
+  email: String!
+  gender: String
+  isSignupCompleted: Boolean!
+  location: LocationType
+  phone: String
+}

@@ -1,0 +1,30 @@
+.eventCard {
+  .avatar {
+    width: 215px;
+    height: 130px;
+    margin-bottom: 10px;
+  }
+    .buttonContainer {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+      gap: 2px;
+    }
+    .text {
+        text-decoration: none;
+     }
+  }
+
+  .inputBlock {
+    flex: 1
+  }
+
+  .avatar {
+    width: 215px;
+    height: 130px;
+    margin-bottom: 10px;
+  }
+
+  .LinkText {
+    text-decoration: none;
+  }
